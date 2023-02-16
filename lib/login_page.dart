@@ -117,10 +117,13 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.pushNamed(context, 'register');
                           },
                           child: const Text(
-                            "Signup",
+                            "SignUp",
                             style: TextStyle(color: Colors.blue),
                           ),
-                        )
+                        ),
+                        SizedBox(width:40),
+                        TextButton(onPressed:(){Navigator.pushNamed(context, 'forgot');}, child: const Text("Forget Password",
+                            style: TextStyle(color: Colors.blue),))
                       ],
                     ),
                     const SizedBox(
@@ -140,13 +143,14 @@ class _LoginPageState extends State<LoginPage> {
                                   
                                   await AuthService().login(email, pass, context);
                               if (result != null) {
+                                // ignore: use_build_context_synchronously
                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                   content: Text("Logged in Successfully"),
                                   backgroundColor: Colors.green,
                                   
                                 ));
                                 // ignore: use_build_context_synchronously
-                                Navigator.pushNamed(context, "home");
+                                // Navigator.pushNamed(context, "home");
                               }
                             } else {
                               print("not");

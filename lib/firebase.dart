@@ -66,6 +66,29 @@ Future<User?> register(String email,String pass, BuildContext context) async {
     await _googleSignIn.signOut();
   }
 
+   Future resetPassword(email,BuildContext context) async {
+    
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: email);
 
+       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Reset password link send"),
+        backgroundColor: Colors.green,
+      ));
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } on FirebaseAuthException catch (e) {
+      print(e);
+
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.message.toString()),
+        backgroundColor: Colors.red,
+      ));
+      Navigator.of(context).pop();
+    }
+  }
 }
+
+
+
 

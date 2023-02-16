@@ -29,7 +29,24 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: cur == 0 ? const Text("Home page") : const Text("Settings"),
           actions: [
-            IconButton(onPressed: (){logout();}, icon: const Icon(Icons.logout))
+            IconButton(onPressed: (){showDialog(
+  context: context,
+  builder: (BuildContext context) {
+    return AlertDialog(
+      title: const Text('Logout'),
+      content: const Text('Are you sure you want to Logout.'),
+      actions: [
+        TextButton(
+          onPressed: () {
+            // Do something when the user presses this button
+            logout();
+          },
+          child: const Text('Yes'),
+        ),
+      ],
+    );
+  },
+);}, icon: const Icon(Icons.logout))
           ],
           automaticallyImplyLeading: false,
         ),
