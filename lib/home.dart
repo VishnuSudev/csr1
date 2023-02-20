@@ -11,12 +11,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int cur = 0;
-  void logout() async{
+  FirebaseAuth firebaseAuth=FirebaseAuth.instance;
+  Future logout() async{
       await AuthService().googleSignOut();
+      
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, 'login');
+        
+      
+
+      
   }
 
+  
+  Future getdetails()async {
+    Map<String, dynamic>? a=await AuthService().getUserData(firebaseAuth.currentUser!.uid);
+    print(a!['role']);
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,9 +47,10 @@ class _HomePageState extends State<HomePage> {
       content: const Text('Are you sure you want to Logout.'),
       actions: [
         TextButton(
-          onPressed: () {
-            // Do something when the user presses this button
-            logout();
+          onPressed: (){
+             Navigator.of(context).pop();
+             logout();
+            
           },
           child: const Text('Yes'),
         ),
@@ -65,6 +76,7 @@ class _HomePageState extends State<HomePage> {
                           fontSize: 30,
                         ),
                       ),
+                      ElevatedButton(onPressed:(){getdetails();}, child: Text("click for details")),
                       Container(
                         margin: const EdgeInsets.only(top: 70),
                         child: const Image(

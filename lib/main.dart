@@ -1,7 +1,9 @@
+import 'package:csr/customer.dart';
 import 'package:csr/firebase.dart';
 import 'package:csr/forget_password.dart';
 import 'package:csr/home.dart';
 import 'package:csr/login_page.dart';
+import 'package:csr/merchant.dart';
 import 'package:csr/register.dart';
 import 'package:csr/verify.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,6 +27,20 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
+  void initState() {
+    super.initState();
+   getdetails();
+  }
+  String role="customer";
+  Future getdetails()async {
+    Map<String, dynamic>? a=await AuthService().getUserData(AuthService().firebaseAuth.currentUser!.uid);
+    final String name=a!['name'];
+    setState(() {
+      role=a['role'];
+    });
+    
+  }
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -32,7 +48,14 @@ class _MyAppState extends State<MyApp> {
         stream: AuthService().firebaseAuth.authStateChanges(),
         builder: (context, snapshot) {
           if(snapshot.hasData){
-            return VerifyEmailPage();
+            getdetails();
+            if(role=='mer'){
+              return merchantDashboard();
+            }
+            else if(role=='cus'){
+            return customerDashboard();
+            }
+            return Text("User not found");
           }
           else{
             return LoginPage();
@@ -45,6 +68,9 @@ class _MyAppState extends State<MyApp> {
         'home': (context) => const HomePage(),
         'forgot': (context) => const forgetPassword(),
         'verify': (context) =>  VerifyEmailPage(),
+        'customer': (context) =>  customerDashboard(),
+        'merchant': (context) =>  merchantDashboard(),
+        
 
         
         

@@ -11,9 +11,13 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   var a = true;
-  var email = "";
-  var pass = "";
-  TextEditingController user = TextEditingController();
+  String _selectedValue = '';
+  TextEditingController emailcont = TextEditingController();
+  TextEditingController usercont = TextEditingController();
+  TextEditingController passcont = TextEditingController();
+  TextEditingController adresscont = TextEditingController();
+  TextEditingController rolecont = TextEditingController();
+  TextEditingController phcont = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   // void register() async {
   //   try {
@@ -74,7 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
                         return null;
                       },
-                      controller: user,
+                      controller: usercont,
                     ),
                     const SizedBox(
                       height: 30,
@@ -95,11 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
                         return null;
                       },
-                      onChanged: (value) {
-                        setState(() {
-                          email = value;
-                        });
-                      },
+                      controller: emailcont,
                     ),
                     const SizedBox(
                       height: 30,
@@ -135,11 +135,64 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
                         return null;
                       },
-                      onChanged: (value) {
-                        setState(() {
-                          pass = value;
-                        });
+                      // onChanged: (value) {
+                      //   setState(() {
+                      //     pass = value;
+                      //   });
+                      // },
+                      controller: passcont,
+                    ),
+                     const SizedBox(
+                      height: 30,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        suffixIcon: const Icon(Icons.verified_user_outlined),
+                        fillColor: Colors.grey.shade200,
+                        filled: true,
+                        hintText: "Address",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Address is required';
+                        }
+                        return null;
                       },
+                      controller: adresscont,
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                   
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        const Text("Role",style: TextStyle(fontWeight:FontWeight.bold),),
+                        Radio<String>(
+                          value: 'cus',
+                          groupValue: _selectedValue,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedValue = value!.toString();
+                            });
+                          },
+                        ),
+                        const Text('Customer'),
+                        Radio<String>(
+                          value: 'mer',
+                          groupValue: _selectedValue,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedValue = value!.toString();
+                            });
+                          },
+                        ),
+                        const Text('Merchant'),
+                      ],
                     ),
                     Row(
                       children: [
@@ -161,10 +214,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          User? result =
-                              await AuthService().register(email, pass, context);
+                          User? result = await AuthService()
+                              .register(emailcont.text, passcont.text, context);
                           if (result != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            await AuthService().upload(usercont.text, adresscont.text,_selectedValue);
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
                               content: Text("Registration Success"),
                               backgroundColor: Colors.green,
                             ));

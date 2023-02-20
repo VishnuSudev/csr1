@@ -1,18 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AuthService{
-  FirebaseAuth firebaseAuth=FirebaseAuth.instance;
+class AuthService {
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _auth = FirebaseAuth.instance;
   final _googleSignIn = GoogleSignIn();
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
-Future<User?> register(String email,String pass, BuildContext context) async {
+  Future<User?> register(
+      String email, String pass, BuildContext context) async {
     try {
-       UserCredential usercredential=await firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: pass,);
-          return usercredential.user;
-        
+      UserCredential usercredential =
+          await firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: pass,
+      );
+      return usercredential.user;
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.message.toString()),
@@ -21,15 +26,16 @@ Future<User?> register(String email,String pass, BuildContext context) async {
     } catch (e) {
       print(e);
     }
-  
   }
 
-  Future<User?> login(String email,String pass, BuildContext context) async {
+  Future<User?> login(String email, String pass, BuildContext context) async {
     try {
-       UserCredential usercredential=await firebaseAuth
-          .signInWithEmailAndPassword(email: email, password: pass,);
-          return usercredential.user;
-        
+      UserCredential usercredential =
+          await firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: pass,
+      );
+      return usercredential.user;
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.message.toString()),
@@ -38,7 +44,6 @@ Future<User?> register(String email,String pass, BuildContext context) async {
     } catch (e) {
       print(e);
     }
-  
   }
 
   Future<AuthCredential?> signInWithGoogle() async {
@@ -53,7 +58,6 @@ Future<User?> register(String email,String pass, BuildContext context) async {
             idToken: googleSignInAuthentication.idToken);
         await _auth.signInWithCredential(authCredential);
         return authCredential;
-        
       }
     } on FirebaseAuthException catch (e) {
       print(e.message);
@@ -66,13 +70,11 @@ Future<User?> register(String email,String pass, BuildContext context) async {
     await _googleSignIn.signOut();
   }
 
-   Future resetPassword(email,BuildContext context) async {
-    
+  Future resetPassword(email, BuildContext context) async {
     try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: email);
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
 
-       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Reset password link send"),
         backgroundColor: Colors.green,
       ));
@@ -80,15 +82,32 @@ Future<User?> register(String email,String pass, BuildContext context) async {
     } on FirebaseAuthException catch (e) {
       print(e);
 
-       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.message.toString()),
         backgroundColor: Colors.red,
       ));
       Navigator.of(context).pop();
     }
   }
+
+  Future upload(String name, String address, String role) async {
+    await firebaseFirestore
+        .collection("users")
+        .doc(firebaseAuth.currentUser!.uid)
+        .set({"name": name, "address": address, "role": role});
+  }
+
+  Future<Map<String, dynamic>?> getUserData(String id) async {
+  final DocumentReference documentRef =
+      FirebaseFirestore.instance.collection('users').doc(id);
+
+  final DocumentSnapshot documentSnapshot = await documentRef.get();
+
+  if (documentSnapshot.exists) {
+    final data = documentSnapshot.data() as Map<String, dynamic>;
+    return data;
+  } else {
+    return null;
+  }
 }
-
-
-
-
+}
