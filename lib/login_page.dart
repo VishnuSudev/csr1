@@ -14,10 +14,8 @@ class _LoginPageState extends State<LoginPage> {
   var a = true;
   var email = "";
   var pass = "";
-  bool loading=false;
-   final _formKey = GlobalKey<FormState>();
-
- 
+  bool loading = false;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +76,6 @@ class _LoginPageState extends State<LoginPage> {
                           pass = value;
                         });
                       },
-                      
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                           onPressed: () {
@@ -102,8 +99,8 @@ class _LoginPageState extends State<LoginPage> {
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10)),
                       ),
-                       validator: (value) {
-                        if (value == null || value.length<6) {
+                      validator: (value) {
+                        if (value == null || value.length < 6) {
                           return 'password shouls contain atleast 6 characteers';
                         }
                         return null;
@@ -121,62 +118,77 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(color: Colors.blue),
                           ),
                         ),
-                        SizedBox(width:40),
-                        TextButton(onPressed:(){Navigator.pushNamed(context, 'forgot');}, child: const Text("Forget Password",
-                            style: TextStyle(color: Colors.blue),))
+                        SizedBox(width: 40),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'forgot');
+                            },
+                            child: const Text(
+                              "Forget Password",
+                              style: TextStyle(color: Colors.blue),
+                            ))
                       ],
                     ),
                     const SizedBox(
                       height: 30,
                     ),
-                     loading? const CircularProgressIndicator():
-                    Container(
-                      child: Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () async{
-                              // Navigator.pushNamed(context, "home");
-                              // login();
-                              if (_formKey.currentState!.validate()) {
-                                   
-                               User? result =
-                                  
-                                  await AuthService().login(email, pass, context);
-                              if (result != null) {
-                                // ignore: use_build_context_synchronously
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                  content: Text("Logged in Successfully"),
-                                  backgroundColor: Colors.green,
-                                  
-                                ));
-                                // ignore: use_build_context_synchronously
-                                // Navigator.pushNamed(context, "home");
-                              }
-                            } else {
-                              print("not");
-                            }
-                            },
-                            child: const Text("Login"),
+                    loading
+                        ? const CircularProgressIndicator()
+                        : Container(
+                            child: Column(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    // Navigator.pushNamed(context, "home");
+                                    // login();
+                                    if (_formKey.currentState!.validate()) {
+                                      if (email == "admin@gmail.com" &&
+                                          pass == "Admin@123") {
+                                        Navigator.pushNamed(context, "admin");
+                                      } else {
+                                        User? result = await AuthService()
+                                            .login(email, pass, context);
+                                        if (result != null) {
+                                          // ignore: use_build_context_synchronously
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                            content:
+                                                Text("Logged in Successfully"),
+                                            backgroundColor: Colors.green,
+                                          ));
+                                          // ignore: use_build_context_synchronously
+                                          // Navigator.pushNamed(context, "home");
+                                        }
+                                      }
+                                    } else {
+                                      print("not");
+                                    }
+                                  },
+                                  child: const Text("Login"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    // await  AuthService().signInWithGoogle();
+                                    var a =
+                                        await AuthService().signInWithGoogle();
+                                    print(a);
+                                    if (a != null) {
+                                      // ignore: use_build_context_synchronously
+                                      Navigator.pushNamed(context, "home");
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content:
+                                            Text("please select an account"),
+                                        backgroundColor: Colors.orangeAccent,
+                                      ));
+                                    }
+                                  },
+                                  child: const Text("Login with Google"),
+                                )
+                              ],
+                            ),
                           ),
-                          ElevatedButton(onPressed: ()async{
-                            // await  AuthService().signInWithGoogle();
-                            var a= await AuthService().signInWithGoogle();
-                            print(a);
-                            if(a!=null){
-                            // ignore: use_build_context_synchronously
-                            Navigator.pushNamed(context, "home");
-                            }
-                            else{
-                               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                  content: Text("please select an account"),
-                                  backgroundColor: Colors.orangeAccent,
-                               ));
-                            }
-                          }, child: const Text("Login with Google"),)
-                        ],
-                      ), 
-                    ),
-              
                   ]),
                 ),
               )

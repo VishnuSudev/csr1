@@ -218,6 +218,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               .register(emailcont.text, passcont.text, context);
                           if (result != null) {
                             await AuthService().upload(usercont.text, adresscont.text,_selectedValue);
+                            //  Navigator.pushNamed(context, "login");
+                            // await AuthService().googleSignOut();
+                            // Navigator.pushNamed(context, "login");
+                        
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
                               content: Text("Registration Success"),

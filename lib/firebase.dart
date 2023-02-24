@@ -30,6 +30,7 @@ class AuthService {
 
   Future<User?> login(String email, String pass, BuildContext context) async {
     try {
+      
       UserCredential usercredential =
           await firebaseAuth.signInWithEmailAndPassword(
         email: email,
@@ -110,4 +111,18 @@ class AuthService {
     return null;
   }
 }
+
+Future<List<Map<String, dynamic>>> getUserDataListByName(String name) async {
+  CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+  QuerySnapshot querySnapshot = await usersCollection.where('role', isEqualTo: name).get();
+  List<Map<String, dynamic>> userDataList = [];
+  for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+    Map<String, dynamic> userData = documentSnapshot.data()as Map<String, dynamic>;
+    userDataList.add(userData);
+  }
+  return userDataList;
+}
+
+
+
 }

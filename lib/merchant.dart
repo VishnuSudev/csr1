@@ -37,6 +37,8 @@ Future logout()async {
         body: Center(child: Column(children: [
           Container(child: Text("Welcome to Merchant dashboard"),),
           SizedBox(height: 10,),
+          nam=="loading"?
+          const CircularProgressIndicator():
           Text(nam),
   
         ],)),

@@ -9,7 +9,7 @@ class customerDashboard extends StatefulWidget {
 }
 
 class _customerDashboardState extends State<customerDashboard> {
-  String nam="loading";
+  String nam="loading...";
   @override
   void initState() {
     super.initState();

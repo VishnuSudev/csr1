@@ -1,3 +1,6 @@
+import 'package:csr/Admin/admin.dart';
+import 'package:csr/Admin/customer_display.dart';
+import 'package:csr/Admin/merchant_display.dart';
 import 'package:csr/customer.dart';
 import 'package:csr/firebase.dart';
 import 'package:csr/forget_password.dart';
@@ -29,7 +32,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-   getdetails();
+  //  getdetails();
   }
   String role="customer";
   Future getdetails()async {
@@ -42,6 +45,15 @@ class _MyAppState extends State<MyApp> {
   }
   @override
   Widget build(BuildContext context) {
+    Future getdetails()async {
+    Map<String, dynamic>? a=await AuthService().getUserData(AuthService().firebaseAuth.currentUser!.uid);
+    final String name=a!['name'];
+    setState(() {
+      role=a['role'];
+    });
+    
+  }
+    
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: StreamBuilder(
@@ -50,15 +62,26 @@ class _MyAppState extends State<MyApp> {
           if(snapshot.hasData){
             getdetails();
             if(role=='mer'){
-              return merchantDashboard();
+              return const merchantDashboard();
             }
             else if(role=='cus'){
-            return customerDashboard();
+            return const customerDashboard();
             }
-            return Text("User not found");
+            return Scaffold(
+              body: Column(
+                children: [
+                  Container(
+                    child: const Text("Loading..."),
+                  ),
+                  Container(
+                    child: const CircularProgressIndicator(),
+                  )
+                ],
+              ),
+            );
           }
           else{
-            return LoginPage();
+            return const LoginPage();
           }
         }
       ),
@@ -68,8 +91,11 @@ class _MyAppState extends State<MyApp> {
         'home': (context) => const HomePage(),
         'forgot': (context) => const forgetPassword(),
         'verify': (context) =>  VerifyEmailPage(),
-        'customer': (context) =>  customerDashboard(),
-        'merchant': (context) =>  merchantDashboard(),
+        'customer': (context) =>  const customerDashboard(),
+        'merchant': (context) =>  const merchantDashboard(),
+        'admin': (context) =>  const Admin(),
+        'dismer': (context) =>  const merchantDisplay(),
+        'discus': (context) =>  const customerDisplay(),
         
 
         
