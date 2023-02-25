@@ -91,6 +91,9 @@ class _AdminState extends State<Admin> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
+                   onTap: () {
+                    Navigator.pushNamed(context, "appmer");
+                   },
                   child: Container(
                     width: MediaQuery.of(context).size.height / 6,
                     margin: EdgeInsets.only(top: 60, left: 30),
@@ -113,6 +116,9 @@ class _AdminState extends State<Admin> {
                   ),
                 ),
                 GestureDetector(
+                   onTap: () {
+                     Navigator.of(context).pop();
+                   },
                   child: Container(
                     width: MediaQuery.of(context).size.height / 6,
                     margin: EdgeInsets.only(top: 60, right: 30),

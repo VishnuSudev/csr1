@@ -227,6 +227,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               content: Text("Registration Success"),
                               backgroundColor: Colors.green,
                             ));
+                             // ignore: use_build_context_synchronously
+                             Navigator.of(context).pop();
                           }
                         } else {
                           print("not");

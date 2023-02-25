@@ -92,13 +92,17 @@ class AuthService {
   }
 
   Future upload(String name, String address, String role) async {
+    var a="true";
+    if(role=='mer'){
+      a="false";
+    }
     await firebaseFirestore
         .collection("users")
         .doc(firebaseAuth.currentUser!.uid)
-        .set({"name": name, "address": address, "role": role});
+        .set({"name": name, "address": address, "role": role,"id":firebaseAuth.currentUser?.uid,"status":a});
   }
 
-  Future<Map<String, dynamic>?> getUserData(String id) async {
+  Future<Map<String, dynamic>?> getUserData(String id,) async {
   final DocumentReference documentRef =
       FirebaseFirestore.instance.collection('users').doc(id);
 
@@ -112,15 +116,29 @@ class AuthService {
   }
 }
 
-Future<List<Map<String, dynamic>>> getUserDataListByName(String name) async {
+Future<List<Map<String, dynamic>>> getUserDataListByName(String key,String value) async {
   CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
-  QuerySnapshot querySnapshot = await usersCollection.where('role', isEqualTo: name).get();
+  QuerySnapshot querySnapshot = await usersCollection.where(key, isEqualTo:value).get();
   List<Map<String, dynamic>> userDataList = [];
   for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
     Map<String, dynamic> userData = documentSnapshot.data()as Map<String, dynamic>;
     userDataList.add(userData);
   }
   return userDataList;
+}
+
+Future<void>update(String key,String value,String uid,BuildContext context)async {
+final documentReference = FirebaseFirestore.instance.collection('users').doc(uid);
+
+// Update the value of the 'age' field
+await documentReference.update({key: value}).then((_) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Merchant status Approved"),
+        backgroundColor: Colors.green,
+      ));
+}).catchError((error) {
+  print('Error updating document: $error');
+});
 }
 
 

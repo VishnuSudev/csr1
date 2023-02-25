@@ -13,12 +13,12 @@ class _customerDisplayState extends State<customerDisplay> {
   @override
   void initState() {
     super.initState();
-    _getUserDataListByName('cus');
+    _getUserDataListByName('role','cus');
   }
 
-  Future<void> _getUserDataListByName(String name) async {
+  Future<void> _getUserDataListByName(String key,String value) async {
     List<Map<String, dynamic>> userDataList =
-        await AuthService().getUserDataListByName(name);
+        await AuthService().getUserDataListByName(key,value);
     setState(() {
       _userDataList = userDataList;
     });
